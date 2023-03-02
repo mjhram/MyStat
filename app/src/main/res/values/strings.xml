@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">My Stat</string>
+    <string name="menu_perday">عرض القراءات لكل يوم</string>
+    <string name="menu_history">عرض القراءات السابقة</string>
+    <string name="menu_export">خزن البيانات</string>
+    <string name="menu_import">استرجاع البيانات</string>
+    <string name="menu_graph">رسم بياني (باليوم)</string>
+    <string name="menu_graph2">رسم بياني</string>
+
+    <string name="menu_use">استخدم</string>
+    <string name="menu_order">ترتيب حسب...</string>
+    <string name="menu_orderbyprevdate">تاريخ القراءة</string>
+    <string name="menu_orderbysavedate">تاريخ تدوين القراءة</string>
+    <string name="menu_noorder">بدون ترتيب</string>
+    <string-array name="date_array">
+        <item>Now</item>
+        <item>Yesterday</item>
+        <item>Custom</item>
+    </string-array>
+
+    <string name="title_activity_graph">GraphActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
