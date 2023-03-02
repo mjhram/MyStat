@@ -25,6 +25,7 @@ public class elec_info implements Parcelable {
     public Long prevDateInMilliSec;
     //public Long nextDateInMilliSec;
     public float prevReading;
+    public String note;
     //public Long nextReading;
     //public String price;
     //public String calculationString;
@@ -37,6 +38,7 @@ public class elec_info implements Parcelable {
         dest.writeLong(prevDateInMilliSec);
         //dest.writeLong(nextDateInMilliSec);
         dest.writeFloat(prevReading);
+        dest.writeString(note);
         //dest.writeLong(nextReading);
         //dest.writeString(price);
         //dest.writeString(calculationString);
@@ -53,6 +55,7 @@ public class elec_info implements Parcelable {
         prevDateInMilliSec=in.readLong();
         //nextDateInMilliSec=in.readLong();
         prevReading=in.readFloat();
+        note = in.readString();
         //nextReading=in.readLong();
         //price = in.readString();
         //calculationString = in.readString();
@@ -99,6 +102,7 @@ public class elec_info implements Parcelable {
         } else {
             tmpMobInfo.id = in.getLong(in.getColumnIndexOrThrow("No"));
             tmpMobInfo.time = in.getString(in.getColumnIndexOrThrow("time"));
+            tmpMobInfo.note = in.getString(in.getColumnIndexOrThrow("note"));
             tmpMobInfo.prevDateInMilliSec = in.getLong(in.getColumnIndexOrThrow("prevDateInMilliSec"));
             tmpMobInfo.prevReading = in.getFloat(in.getColumnIndexOrThrow("prevReading"));
         }
@@ -116,6 +120,7 @@ public class elec_info implements Parcelable {
         //params.put("nextDateInMilliSec", tmp);
         tmp = String.format("%2.2f", prevReading);
         params.put("prevReading", tmp);
+        params.put("note", note);
         params.put("userId", id);
         //tmp = nextReading.toString();
         //params.put("nextReading", tmp);

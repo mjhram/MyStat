@@ -229,6 +229,8 @@ class MyInfoArrayAdapter extends ArrayAdapter<elec_info> {
         txt_tmp.setText(tmp);
         txt_tmp = (TextView) rowView.findViewById(R.id.tvPrevReading);
         txt_tmp.setText(String.format("%2.2f", info.prevReading));
+        txt_tmp = (TextView) rowView.findViewById(R.id.tvNote);
+        txt_tmp.setText(info.note);
         /*txt_tmp = (TextView) rowView.findViewById(R.id.tvNextDate);
         //tmp = getDateString(info.nextDateInMilliSec);
         //txt_tmp.setText(tmp);

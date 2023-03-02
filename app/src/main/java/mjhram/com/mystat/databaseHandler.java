@@ -16,7 +16,7 @@ import java.util.List;
 public class databaseHandler extends SQLiteOpenHelper {
         // All Static variables
         // Database
-        private static final int DATABASE_VERSION = 5;
+        private static final int DATABASE_VERSION = 6;
         public static final String DATABASE_NAME = "myData.db";
         private static final String KEY_ID = "No";
 
@@ -36,6 +36,7 @@ public class databaseHandler extends SQLiteOpenHelper {
                         + "No INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                         + " userId int(4) DEFAULT 0,"
                         + " userName varchar(100) DEFAULT 'User0',"
+                        + " note varchar(250) DEFAULT '',"
                         + " prevDateInMilliSec bigint  DEFAULT 0,"
                         //+ " nextDateInMilliSec bigint  DEFAULT 0,"
                         + " prevReading real  DEFAULT 0.0"
@@ -73,13 +74,18 @@ public class databaseHandler extends SQLiteOpenHelper {
                 db.execSQL(sql);
             } else if(oldVersion==4) {
                 db.execSQL("ALTER TABLE " + TABLE_USERS + "  ADD storedReading REAL DEFAULT 50.0");
-            } else {
+            }
+            if(oldVersion <=5 && newVersion == 6) {
+                db.execSQL("ALTER TABLE " + TABLE_DATA + "  ADD note varchar(250) DEFAULT ''");
+            }
+            /*else {
                 // Drop older table if existed
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA);
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
                 // Create tables again
                 onCreate(db);
-            }
+            }*/
+
         }
 
         /**

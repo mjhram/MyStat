@@ -47,13 +47,14 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
-    Spinner staticSpinner;
+    Spinner dateSelectionSpinner;
     static TextView selectedDateView, prevDateTextView;
     static ImageButton prevDateImgBtn;
     //static CheckBox saveCheckBox;
     static Button btnCalc;
     static long prevDate;
     EditText prevReadTextEdit;
+    EditText notesEditText;
     //int unitsPerMonthX2016 = 1000;
     //int unitsPerMonth = 500;
     SharedPreferences sharedPref;
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        staticSpinner = (Spinner) findViewById(R.id.spinner_date);
+        dateSelectionSpinner = (Spinner) findViewById(R.id.spinner_date);
         // Create an ArrayAdapter using the string array and a default spinner
         ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
                 .createFromResource(this, R.array.date_array,
@@ -154,8 +155,8 @@ public class MainActivity extends AppCompatActivity {
         // Specify the layout to use when the list of choices appears
         staticAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        staticSpinner.setAdapter(staticAdapter);
-        staticSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        dateSelectionSpinner.setAdapter(staticAdapter);
+        dateSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
@@ -178,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         prevDateTextView = (TextView) findViewById(R.id.textViewPrevDate);
         prevDateImgBtn = findViewById(R.id.imageButtonPrevDate);
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
+        notesEditText = (EditText) findViewById(R.id.editTextNotes);
         loadSettings();
     }
 
@@ -232,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
     void saveValues(){
         elec_info eInfo = new elec_info();
-        String tmp = staticSpinner.getSelectedItem().toString();
+        String tmp = dateSelectionSpinner.getSelectedItem().toString();
         if(tmp.equals("Now")) {
             eInfo.prevDateInMilliSec = getNow();
         }else if(tmp.equals("Yesterday")) {
@@ -242,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //eInfo.nextDateInMilliSec = nextDate;
         eInfo.prevReading = Float.parseFloat(prevReadTextEdit.getText().toString());
+        eInfo.note = notesEditText.getText().toString();
         //eInfo.nextReading = Long.parseLong(nextReadTextEdit.getText().toString());
         //eInfo.price = String.format("%.0f",price);
         //eInfo.calculationString = calculationStr;
@@ -262,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
             //showDate(nextDateTextView, nextDate);
 
             prevReadTextEdit.setText(String.format("%2.2f", eInfo.prevReading));
+            notesEditText.setText(eInfo.note);
 
         }
     }
