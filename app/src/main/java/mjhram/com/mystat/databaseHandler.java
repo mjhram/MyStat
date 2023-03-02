@@ -128,9 +128,9 @@ public class databaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_USERS, columns, tmp, null, null, null, null, null);
         user_info usr = new user_info();
         if (cursor.moveToFirst()) {
-            usr.id = cursor.getInt(cursor.getColumnIndex("id"));
-            usr.name = cursor.getString(cursor.getColumnIndex("name"));
-            usr.storedReading = cursor.getFloat(cursor.getColumnIndex("storedReading"));
+            usr.id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            usr.name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            usr.storedReading = cursor.getFloat(cursor.getColumnIndexOrThrow("storedReading"));
         }
         db.close();
         return usr;
@@ -190,9 +190,9 @@ public class databaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 user_info user = new user_info();
-                user.name = cursor.getString(cursor.getColumnIndex("name"));
-                user.id = cursor.getInt(cursor.getColumnIndex("id"));
-                user.storedReading = cursor.getFloat(cursor.getColumnIndex("storedReading"));
+                user.name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                user.id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                user.storedReading = cursor.getFloat(cursor.getColumnIndexOrThrow("storedReading"));
                 list.add(user);
             } while (cursor.moveToNext());
         }

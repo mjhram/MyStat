@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("CURRENT_USER_IDX", currentUserIdx);
         //editor.putLong("PREV_DATE", prevDate);
         //editor.putFloat("PREV_READING", Float.parseFloat(prevReadTextEdit.getText().toString()));
-        editor.commit();
+        editor.apply();
         user_info usr = usersList.get(currentUserIdx);
         usr.storedReading = Float.parseFloat(prevReadTextEdit.getText().toString());
         dbHandler.storeSettings(usr);

@@ -93,14 +93,14 @@ public class elec_info implements Parcelable {
     static public elec_info getInfoFromRow(Cursor in, SortType sortType) {
         elec_info tmpMobInfo = new elec_info();
         if(sortType == SortType.PerDay) {
-            tmpMobInfo.date = in.getString(in.getColumnIndex("date1"));
-            tmpMobInfo.min = in.getFloat(in.getColumnIndex("min1"));
-            tmpMobInfo.max = in.getFloat(in.getColumnIndex("max1"));
+            tmpMobInfo.date = in.getString(in.getColumnIndexOrThrow("date1"));
+            tmpMobInfo.min = in.getFloat(in.getColumnIndexOrThrow("min1"));
+            tmpMobInfo.max = in.getFloat(in.getColumnIndexOrThrow("max1"));
         } else {
-            tmpMobInfo.id = in.getLong(in.getColumnIndex("No"));
-            tmpMobInfo.time = in.getString(in.getColumnIndex("time"));
-            tmpMobInfo.prevDateInMilliSec = in.getLong(in.getColumnIndex("prevDateInMilliSec"));
-            tmpMobInfo.prevReading = in.getFloat(in.getColumnIndex("prevReading"));
+            tmpMobInfo.id = in.getLong(in.getColumnIndexOrThrow("No"));
+            tmpMobInfo.time = in.getString(in.getColumnIndexOrThrow("time"));
+            tmpMobInfo.prevDateInMilliSec = in.getLong(in.getColumnIndexOrThrow("prevDateInMilliSec"));
+            tmpMobInfo.prevReading = in.getFloat(in.getColumnIndexOrThrow("prevReading"));
         }
         return tmpMobInfo;
     }
