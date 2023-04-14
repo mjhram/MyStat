@@ -16,7 +16,7 @@ import java.util.List;
 public class databaseHandler extends SQLiteOpenHelper {
         // All Static variables
         // Database
-        private static final int DATABASE_VERSION = 6;
+        private static final int DATABASE_VERSION = 7;
         public static final String DATABASE_NAME = "myData.db";
         private static final String KEY_ID = "No";
 
@@ -49,7 +49,8 @@ public class databaseHandler extends SQLiteOpenHelper {
                 CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + "("
                          + "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                          + " name varchar(100) DEFAULT 'User0',"
-                         + " storedReading REAL DEFAULT 50.0"
+                         + " storedReading REAL DEFAULT 50.0,"
+                         + " storedNote varchar(250) DEFAULT '' "
                         + ")";
                  Log.d("Test", CREATE_TABLE);
                  db.execSQL(CREATE_TABLE);
@@ -78,6 +79,10 @@ public class databaseHandler extends SQLiteOpenHelper {
             if(oldVersion <=5 && newVersion == 6) {
                 db.execSQL("ALTER TABLE " + TABLE_DATA + "  ADD note varchar(250) DEFAULT ''");
             }
+            if(oldVersion <=6 && newVersion == 7) {
+                db.execSQL("ALTER TABLE " + TABLE_USERS + "  ADD storedNote varchar(250) DEFAULT ''");
+            }
+
             /*else {
                 // Drop older table if existed
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_DATA);
@@ -123,6 +128,7 @@ public class databaseHandler extends SQLiteOpenHelper {
         String tmp = "id = "+usr.id;
         ContentValues cv = new ContentValues();
         cv.put("storedReading",usr.storedReading); //These Fields should be your String values of actual column names
+        cv.put("storedNote",usr.storedNote);
         int a = db.update(TABLE_USERS, cv, tmp, null);
         db.close();
     }
@@ -130,13 +136,14 @@ public class databaseHandler extends SQLiteOpenHelper {
     public user_info loadSettings(String usrName) {
         SQLiteDatabase db = this.getWritableDatabase();
         String tmp = "name = '"+usrName+"'";
-        String[] columns = {"id", "name", "storedReading"};
+        String[] columns = {"id", "name", "storedReading", "storedNote"};
         Cursor cursor = db.query(TABLE_USERS, columns, tmp, null, null, null, null, null);
         user_info usr = new user_info();
         if (cursor.moveToFirst()) {
             usr.id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             usr.name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
             usr.storedReading = cursor.getFloat(cursor.getColumnIndexOrThrow("storedReading"));
+            usr.storedNote = cursor.getString(cursor.getColumnIndexOrThrow("storedNote"));
         }
         db.close();
         return usr;
@@ -199,6 +206,7 @@ public class databaseHandler extends SQLiteOpenHelper {
                 user.name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 user.id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
                 user.storedReading = cursor.getFloat(cursor.getColumnIndexOrThrow("storedReading"));
+                user.storedNote = cursor.getString(cursor.getColumnIndexOrThrow("storedNote"));
                 list.add(user);
             } while (cursor.moveToNext());
         }

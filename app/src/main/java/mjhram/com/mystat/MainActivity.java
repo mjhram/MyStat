@@ -32,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
@@ -43,7 +44,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -139,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 currentUserIdx = idx;
                 if(currentUserIdx>=0 && currentUserIdx<usersList.size()) {
                     prevReadTextEdit.setText(String.format("%2.2f", usr.storedReading));
+                    notesEditText.setText(usr.storedNote);
                 }
             }
             @Override
@@ -180,13 +184,15 @@ public class MainActivity extends AppCompatActivity {
         prevDateImgBtn = findViewById(R.id.imageButtonPrevDate);
         prevReadTextEdit = (EditText) findViewById(R.id.editTextPrevReading);
         notesEditText = (EditText) findViewById(R.id.editTextNotes);
+        dateTimePicker_init();
         loadSettings();
     }
 
     public void onPrevDateClicked(View v) {
         selectedDateView = prevDateTextView;
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
+        dateTimePicker_show();
+        //DialogFragment newFragment = new DatePickerFragment();
+        //newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     public void onCalculateClicked(View v) {
@@ -219,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         //usr.storedReading = Float.parseFloat(prevReadTextEdit.getText().toString());
         user_info usr2 = dbHandler.loadSettings(usr.name);
         prevReadTextEdit.setText(String.format("%2.2f", usr2.storedReading));
+        notesEditText.setText(usr2.storedNote);
     }
 
     void storeSettings() {
@@ -229,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         user_info usr = usersList.get(currentUserIdx);
         usr.storedReading = Float.parseFloat(prevReadTextEdit.getText().toString());
+        usr.storedNote = notesEditText.getText().toString();
         dbHandler.storeSettings(usr);
     }
 
@@ -355,6 +363,9 @@ public class MainActivity extends AppCompatActivity {
         spinnerArrayAdapter.notifyDataSetChanged();
         currentUserIdx=usersList.size()-1;
         usersSpinner.setSelection(currentUserIdx);
+        user_info usr2 = dbHandler.loadSettings(usr.name);
+        prevReadTextEdit.setText(String.format("%2.2f", usr2.storedReading));
+        notesEditText.setText(usr2.storedNote);
     }
 
     public void onAddUserClicked(View view) {
@@ -382,6 +393,75 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private SwitchDateTimeDialogFragment dateTimeFragment;
+    private static final String TAG_DATETIME_FRAGMENT = "TAG_DATETIME_FRAGMENT";
+    void dateTimePicker_show () {
+        final Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        if(selectedDateView == prevDateTextView) {
+            c.setTimeInMillis(prevDate);
+        }
+        // Re-init each time
+        dateTimeFragment.startAtCalendarView();
+        dateTimeFragment.setDefaultDateTime(c.getTime());
+        dateTimeFragment.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
+    }
+    private void dateTimePicker_init() {
+        // Construct SwitchDateTimePicker
+        dateTimeFragment = (SwitchDateTimeDialogFragment) getSupportFragmentManager().findFragmentByTag(TAG_DATETIME_FRAGMENT);
+        if (dateTimeFragment == null) {
+            dateTimeFragment = SwitchDateTimeDialogFragment.newInstance(
+                    getString(R.string.label_datetime_dialog),
+                    getString(android.R.string.ok),
+                    getString(android.R.string.cancel)
+                    //,getString(R.string.clean),// Optional
+                    //"en"
+            );
+        }
+
+        // Optionally define a timezone
+        dateTimeFragment.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        // Init format
+        final SimpleDateFormat myDateFormat = new SimpleDateFormat("d MMM yyyy HH:mm", java.util.Locale.getDefault());
+        // Assign unmodifiable values
+        dateTimeFragment.set24HoursMode(true);
+        dateTimeFragment.setHighlightAMPMSelection(false);
+        dateTimeFragment.setMinimumDateTime(new GregorianCalendar(2015, Calendar.JANUARY, 1).getTime());
+        dateTimeFragment.setMaximumDateTime(new GregorianCalendar(2025, Calendar.DECEMBER, 31).getTime());
+
+        // Define new day and month format
+        try {
+            dateTimeFragment.setSimpleDateMonthAndDayFormat(new SimpleDateFormat("MMMM dd", Locale.getDefault()));
+        } catch (SwitchDateTimeDialogFragment.SimpleDateMonthAndDayFormatException e) {
+            Log.e("DTSwitch", e.getMessage());
+        }
+
+        // Set listener for date
+        // Or use dateTimeFragment.setOnButtonClickListener(new SwitchDateTimeDialogFragment.OnButtonClickListener() {
+        dateTimeFragment.setOnButtonClickListener(new SwitchDateTimeDialogFragment.OnButtonWithNeutralClickListener() {
+            @Override
+            public void onPositiveButtonClick(Date date) {
+                //textView.setText(myDateFormat.format(date));
+                // Do something with the time chosen by the user
+                long msec = date.getTime();
+                if(selectedDateView == prevDateTextView) {
+                    prevDate = msec;
+                }
+                showDate(selectedDateView, msec);
+            }
+
+            @Override
+            public void onNegativeButtonClick(Date date) {
+                // Do nothing
+            }
+
+            @Override
+            public void onNeutralButtonClick(Date date) {
+                // Optional if neutral button does'nt exists
+                //textView.setText("");
+            }
+        });
+    }
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
